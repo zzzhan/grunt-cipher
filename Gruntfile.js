@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         files: [{
           expand:true,
           cwd:'test/',
-          src:['fixtures/*'],
+          src:['**/*'],
           dest:'tmp/encrypted/'
         }]
       },      
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
         files: [{
           expand:true,
           cwd:'tmp/encrypted/',
-          src:['fixtures/*'],
+          src:['**/*'],
           dest:'tmp/decrypted/'
         }]
       }

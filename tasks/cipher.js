@@ -33,7 +33,7 @@ module.exports = function(grunt) {
           grunt.log.warn('Source file "' + filepath + '" not found.');
           return false;
         } else {
-          return true;
+          return !grunt.file.isDir(filepath);
         }
       });
       src.forEach(function(fp) {
