@@ -17,7 +17,9 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('cipher', 'Encrypt/Decrypt files', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      method:'encrypt'
+      method:'encrypt',
+      force: false,
+      random: false
     });
     if(!options.pk) {      
       grunt.fail.warn('Private key option unfound:pk');
@@ -37,9 +39,21 @@ module.exports = function(grunt) {
       src.forEach(function(fp) {
         // Write the destination file.
         var dest = f.dest;
-        grunt.file.write(f.dest, cipher[options.method](grunt.file.read(fp), options));
-        // Print a success message.
-        grunt.log.writeln('File "' + dest + '" created.');
+        var srcCode = cipher[options.method](grunt.file.read(fp), options);
+        var write = true;
+        if(grunt.file.exists(f.dest)) {
+          var destCode = grunt.file.read(f.dest);
+          if(srcCode===destCode&&!options.force) {
+            write = false;
+          }
+        }
+        if(write) {
+          grunt.file.write(f.dest, srcCode);
+          // Print a success message.
+          grunt.log.writeln('File "' + dest + '" created.');
+        } else {          
+          grunt.log.writeln('File "' + dest + '" skipped with no changes.');
+        }
       });
     });
   });

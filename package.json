@@ -1,7 +1,7 @@
 {
   "name": "grunt-cipher",
   "description": "Encrypt/Decrypt files using private key",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/zzzhan/grunt-cipher",
   "author": {
     "name": "zzzhan",

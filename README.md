@@ -48,6 +48,13 @@ Default value: `'encrypt'`
 
 The value can be `'encrypt'` or `'decrypt'`, which used to decide encrypt or decrypt files.
 
+#### options.force
+Type: `Boolean`
+Default value: `'false'`
+
+The value that is used to overwrite the `'dest'` file or not when encrypting or decrypting files.
+The default value `'false'` is not to overwrite the `'dest'` file, when its content is the same with the encrypted or decrypted result.
+
 ### Usage Examples
 
 #### Encrypt Options

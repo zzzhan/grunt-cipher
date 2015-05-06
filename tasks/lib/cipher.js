@@ -20,14 +20,23 @@ exports.encrypt = function (data, options) {
 	var outputEncoding = options.outputEncoding||'hex';
 	var inputEncoding = options.inputEncoding||'utf8';
 	var seperator = options.seperator||'$';
-    var random_KEY = crypto.randomBytes(Math.ceil(32 / 2)).toString(outputEncoding).slice(0, 32);
-    var cipher_KEY = crypto.createCipher(algorithm,new Buffer(pk, 'ASCII'));
-    var KEY = cipher_KEY.update(random_KEY,inputEncoding,outputEncoding);
-    KEY += cipher_KEY.final(outputEncoding);
-    var cipher = crypto.createCipher(algorithm,random_KEY);
+	var random = options.random||false;
+	var keyBuf = new Buffer(pk, 'ASCII');
+	var finalKey = null;
+	var append = '';
+	if(random) {
+		finalKey = crypto.randomBytes(Math.ceil(32 / 2)).toString(outputEncoding).slice(0, 32);
+		var cipher_KEY = crypto.createCipher(algorithm,keyBuf);
+		var key = cipher_KEY.update(finalKey,inputEncoding,outputEncoding);
+		key += cipher_KEY.final(outputEncoding);
+		append = seperator + key;
+	} else {
+		finalKey = keyBuf;
+	}
+    var cipher = crypto.createCipher(algorithm,finalKey);
     var crypted = cipher.update(data,inputEncoding,outputEncoding);
     crypted += cipher.final(outputEncoding);
-    return crypted + seperator + KEY;
+    return crypted + append;
 };
 exports.decrypt = function (data, options) {
 	var pk = null;
@@ -41,12 +50,27 @@ exports.decrypt = function (data, options) {
 	var outputEncoding = options.outputEncoding||'utf8';
 	var inputEncoding = options.inputEncoding||'hex';
 	var seperator = options.seperator||'$';
-    var cipher_blob = data.split(seperator);
-    var decipher_key = crypto.createDecipher(algorithm,new Buffer(pk, 'ASCII'));
-    var KEY = decipher_key.update(cipher_blob[1],inputEncoding,outputEncoding);
-    KEY += decipher_key.final(outputEncoding);
-    var decipher = crypto.createDecipher(algorithm,KEY);
-    var dec = decipher.update(cipher_blob[0],inputEncoding,outputEncoding);
+	var random = options.random||false;
+	var keyBuf = new Buffer(pk, 'ASCII');
+	var finalKey = null;
+	var cipherBlob = null;
+	if(random) {
+		var cipherBlobs = data.split(seperator);
+		if(cipherBlobs.length>1) {
+			var decipher_key = crypto.createDecipher(algorithm,keyBuf);
+			finalKey = decipher_key.update(cipherBlobs[1],inputEncoding,outputEncoding);
+			finalKey += decipher_key.final(outputEncoding);
+			cipherBlob = cipherBlobs[0];
+		} else {			
+			finalKey = keyBuf;
+			cipherBlob = data;
+		}
+	} else {
+		finalKey = keyBuf;
+		cipherBlob = data;
+	}
+    var decipher = crypto.createDecipher(algorithm,finalKey);
+    var dec = decipher.update(cipherBlob,inputEncoding,outputEncoding);
     dec += decipher.final(outputEncoding);
     return dec;
 };
