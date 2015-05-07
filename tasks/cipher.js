@@ -19,7 +19,9 @@ module.exports = function(grunt) {
     var options = this.options({
       method:'encrypt',
       force: false,
-      random: false
+      random: false,
+      inputEncoding:'binary',
+      outputEncoding:'binary'
     });
     if(!options.pk) {      
       grunt.fail.warn('Private key option unfound:pk');
@@ -39,16 +41,23 @@ module.exports = function(grunt) {
       src.forEach(function(fp) {
         // Write the destination file.
         var dest = f.dest;
-        var srcCode = cipher[options.method](grunt.file.read(fp), options);
+        var srcCode = null;
+        try {
+          srcCode = cipher[options.method](grunt.file.read(fp, {encoding:'binary'}), options);
+        } catch (e) {
+          var err = new Error(options.method + ' failed.');
+          err.origError = e;
+          grunt.fail.warn(err);
+        }
         var write = true;
         if(grunt.file.exists(f.dest)) {
-          var destCode = grunt.file.read(f.dest);
+          var destCode = grunt.file.read(f.dest, {encoding:'binary'});
           if(srcCode===destCode&&!options.force) {
             write = false;
           }
         }
         if(write) {
-          grunt.file.write(f.dest, srcCode);
+          grunt.file.write(f.dest, srcCode, {encoding:'binary'});
           // Print a success message.
           grunt.log.writeln('File "' + dest + '" created.');
         } else {          
@@ -57,5 +66,4 @@ module.exports = function(grunt) {
       });
     });
   });
-
 };

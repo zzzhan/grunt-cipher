@@ -27,20 +27,29 @@ exports.cipher = {
     // setup here if necessary
     done();
   },
-  test1: function(test) {
+  defTest: function(test) {
     test.expect(1);
 
-    var actual = grunt.file.read('tmp/decrypted/fixtures/testing');
-    var expected = grunt.file.read('test/fixtures/testing');
+    var actual = grunt.file.read('tmp/decrypted/fixtures/test.png');
+    var expected = grunt.file.read('test/fixtures/test.png');
     test.equal(actual, expected, 'decrypted file not the same to original');
 
     test.done();
   },
-  test2: function(test) {
+  encoding1Test: function(test) {
     test.expect(1);
 
     var actual = grunt.file.read('tmp/decrypted/fixtures/123');
     var expected = grunt.file.read('test/fixtures/123');
+    test.equal(actual, expected, 'decrypted file not the same to original');
+
+    test.done();
+  },
+  encoding2Test: function(test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/decrypted/fixtures/testing');
+    var expected = grunt.file.read('test/fixtures/testing');
     test.equal(actual, expected, 'decrypted file not the same to original');
 
     test.done();

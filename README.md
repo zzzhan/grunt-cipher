@@ -55,6 +55,25 @@ Default value: `'false'`
 The value that is used to overwrite the `'dest'` file or not when encrypting or decrypting files.
 The default value `'false'` is not to overwrite the `'dest'` file, when its content is the same with the encrypted or decrypted result.
 
+#### options.inputEncoding
+Type: `String`
+Default value: `'binary'`
+
+The value that is used to read the `'src'` file using the encoding.
+
+
+#### options.outputEncoding
+Type: `String`
+Default value: `'binary'`
+
+The value that is used to write the `'dest'` file using the encoding.
+
+#### options.random
+Type: `Boolean`
+Default value: `'false'`
+
+The value that is used to encrypt file different every time even the same file.
+
 ### Usage Examples
 
 #### Encrypt Options
