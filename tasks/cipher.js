@@ -43,13 +43,15 @@ module.exports = function(grunt) {
         // Write the destination file.
         var dest = f.dest;
         var srcCode = null;
-        try {
-          var stats  = fs.statSync(fp);
-          var destStats  = fs.statSync(f.dest);
-          if(destStats['mtime'].getTime()>=stats['mtime'].getTime()) {
-            grunt.log.writeln('File "' + dest + '" skipped with latest.');
-            return;        
-          }
+        try {		  
+	      if(grunt.file.exists(f.dest)) {
+            var stats  = fs.statSync(fp);
+		    var destStats  = fs.statSync(f.dest);
+		    if(destStats['mtime'].getTime()>=stats['mtime'].getTime()) {
+			  grunt.log.writeln('File "' + dest + '" skipped with latest.');
+			  return;        
+		    }
+		  }
           srcCode = cipher[options.method](grunt.file.read(fp, {encoding:'binary'}), options);
         } catch (e) {
           var err = new Error(options.method + ' failed.');
