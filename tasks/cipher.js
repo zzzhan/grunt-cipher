@@ -9,7 +9,8 @@
 'use strict';
 
 module.exports = function(grunt) {
-  var cipher = require('./lib/cipher');
+  var cipher = require('./lib/cipher'),
+  fs = require('fs');
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
@@ -43,6 +44,12 @@ module.exports = function(grunt) {
         var dest = f.dest;
         var srcCode = null;
         try {
+          var stats  = fs.statSync(fp);
+          var destStats  = fs.statSync(f.dest);
+          if(destStats['mtime'].getTime()>=stats['mtime'].getTime()) {
+            grunt.log.writeln('File "' + dest + '" skipped with latest.');
+            return;        
+          }
           srcCode = cipher[options.method](grunt.file.read(fp, {encoding:'binary'}), options);
         } catch (e) {
           var err = new Error(options.method + ' failed.');
